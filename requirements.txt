@@ -1,2 +1,4 @@
 requests
+speedtest
+psutil
 sseclient-py
