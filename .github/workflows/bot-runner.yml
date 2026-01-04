@@ -1,0 +1,36 @@
+name: Telegram Bot Single Instance
+
+on:
+  workflow_dispatch:          # manually start karne ke liye
+  schedule:
+    - cron: "0 * * * *"       # har ghante ek naya run schedule
+
+# Ek hi bot instance ek time pe chalega
+concurrency:
+  group: telegram-bot-single
+  cancel-in-progress: false   # purana chal raha hoga to naya wait karega
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350      # ~5.8 hours (6 ghante limit se thoda kam)
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Start bot
+        run: |
+          echo "Bot session started"
+          python ra.py
+          
